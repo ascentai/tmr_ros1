@@ -33,7 +33,9 @@
     wrist_3_lower_limit:=${-1.5*pi}    wrist_3_upper_limit:=${1.5*pi}
     transmission_hw_interface:=hardware_interface/PositionJointInterface
     safety_limits:=false safety_pos_margin:=0.15
-    safety_k_position:=20">
+    safety_k_position:=20 kinematics_file">
+
+    <xacro:property name="kinematics" value="${kinematics_file['kinematics']}"/>
 
     <!-- Inertia parameters -->
     <xacro:property name="base_mass" value="1.0" />
@@ -89,6 +91,7 @@
 
     <link name="${prefix}base_link" >
       <visual>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm5_base.obj" />
@@ -102,6 +105,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm5_base_c.STL" />
         </geometry>
@@ -114,8 +118,8 @@
     <joint name="${prefix}shoulder_1_joint" type="revolute">
       <parent link="${prefix}base_link" />
       <child link = "${prefix}shoulder_1_link" />
-      <origin xyz="0 ${shoulder_height} 0" rpy="0 0 0" />
-      <axis xyz="0 1 0" />
+      <origin xyz="${kinematics['shoulder_1']['x']} ${kinematics['shoulder_1']['y']} ${kinematics['shoulder_1']['z']}" rpy="${kinematics['shoulder_1']['roll']} ${kinematics['shoulder_1']['pitch']} ${kinematics['shoulder_1']['yaw']}" />
+      <axis xyz="0 0 1" />
       <limit lower="${shoulder_1_lower_limit}" upper="${shoulder_1_upper_limit}" effort="150.0" velocity="3.15" />
       <xacro:if value="${safety_limits}">
         <safety_controller soft_lower_limit="${shoulder_1_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_1_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0" />
@@ -125,6 +129,7 @@
 
     <link name="${prefix}shoulder_1_link">
       <visual>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm_400w_01.obj" />
@@ -138,6 +143,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm_400w_01_c.STL" />
         </geometry>
@@ -150,8 +156,8 @@
     <joint name="${prefix}shoulder_2_joint" type="revolute">
       <parent link="${prefix}shoulder_1_link" />
       <child link = "${prefix}arm_1_link" />
-      <origin xyz="0 0 ${shoulder_offset}" rpy="0 0 0" />    
-      <axis xyz="0 0 -1" />
+      <origin xyz="${kinematics['shoulder_2']['x']} ${kinematics['shoulder_2']['y']} ${kinematics['shoulder_2']['z']}" rpy="${kinematics['shoulder_2']['roll']} ${kinematics['shoulder_2']['pitch']} ${kinematics['shoulder_2']['yaw']}" />
+      <axis xyz="0 0 1" />
       <limit lower="${shoulder_2_lower_limit}" upper="${shoulder_2_upper_limit}" effort="150.0" velocity="3.15" />
       <xacro:if value="${safety_limits}">
         <safety_controller soft_lower_limit="${shoulder_2_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_2_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0" />
@@ -161,6 +167,7 @@
 
     <link name="${prefix}arm_1_link">
       <visual>
+        <origin xyz="0 0 -${shoulder_offset}" rpy="0 3.141592653589793 -${pi / 2.0}"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm5_900_arm1.obj" />
@@ -174,6 +181,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 -${shoulder_offset}" rpy="0 3.141592653589793 -${pi / 2.0}"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm5_900_arm1_c.STL" />
         </geometry>
@@ -186,8 +194,8 @@
     <joint name="${prefix}elbow_joint" type="revolute">
       <parent link="${prefix}arm_1_link" />
       <child link = "${prefix}arm_2_link" />
-      <origin xyz="0 ${arm_1_length} ${-elbow_offset}" rpy="0 0 0" />
-      <axis xyz="0 0 -1" />
+      <origin xyz="${kinematics['elbow']['x']} ${kinematics['elbow']['y']} ${kinematics['elbow']['z']}" rpy="${kinematics['elbow']['roll']} ${kinematics['elbow']['pitch']} ${kinematics['elbow']['yaw']}" />
+      <axis xyz="0 0 1" />
       <limit lower="${elbow_lower_limit}" upper="${elbow_upper_limit}" effort="150.0" velocity="3.15" />
       <xacro:if value="${safety_limits}">
         <safety_controller soft_lower_limit="${elbow_lower_limit + safety_pos_margin}" soft_upper_limit="${elbow_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
@@ -197,6 +205,7 @@
 
     <link name="${prefix}arm_2_link">
       <visual>
+        <origin xyz="0 0 -${shoulder_offset - elbow_offset}" rpy="0 3.141592653589793 -${pi / 2.0}"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm5_900_arm2.obj" />
@@ -210,6 +219,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 -${shoulder_offset - elbow_offset}" rpy="0 3.141592653589793 -${pi / 2.0}"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm5_900_arm2_c.STL" />
         </geometry>
@@ -222,8 +232,8 @@
     <joint name="${prefix}wrist_1_joint" type="revolute">
       <parent link="${prefix}arm_2_link" />
       <child link = "${prefix}wrist_1_link" />
-      <origin xyz="0 ${arm_2_length} ${wrist_offset}" rpy="0 0 0" />
-      <axis xyz="0 0 -1" />
+      <origin xyz="${kinematics['wrist_1']['x']} ${kinematics['wrist_1']['y']} ${kinematics['wrist_1']['z']}" rpy="${kinematics['wrist_1']['roll']} ${kinematics['wrist_1']['pitch']} ${kinematics['wrist_1']['yaw']}" />
+      <axis xyz="0 0 1" />
       <limit lower="${wrist_1_lower_limit}" upper="${wrist_1_upper_limit}" effort="150.0" velocity="3.15"/>
       <xacro:if value="${safety_limits}">
         <safety_controller soft_lower_limit="${wrist_1_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_1_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0" />
@@ -233,6 +243,7 @@
 
     <link name="${prefix}wrist_1_link">
       <visual>
+        <origin xyz="0 0 0" rpy="${pi} 0 0"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm_100w_01.obj" />
@@ -246,6 +257,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 0" rpy="${pi} 0 0"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm_100w_01_c.STL" />
         </geometry>
@@ -258,8 +270,8 @@
     <joint name="${prefix}wrist_2_joint" type="revolute">
       <parent link="${prefix}wrist_1_link" />
       <child link = "${prefix}wrist_2_link" />
-      <origin xyz="0 ${wrist_2_length} 0" rpy="0 0 0" />
-      <axis xyz="0 1 0" />
+      <origin xyz="${kinematics['wrist_2']['x']} ${kinematics['wrist_2']['y']} ${kinematics['wrist_2']['z']}" rpy="${kinematics['wrist_2']['roll']} ${kinematics['wrist_2']['pitch']} ${kinematics['wrist_2']['yaw']}" />
+      <axis xyz="0 0 1" />
       <limit lower="${wrist_2_lower_limit}" upper="${wrist_2_upper_limit}" effort="150.0" velocity="3.15" />
       <xacro:if value="${safety_limits}">
         <safety_controller soft_lower_limit="${wrist_2_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_2_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0" />
@@ -269,6 +281,7 @@
 
     <link name="${prefix}wrist_2_link">
       <visual>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
         <xacro:unless value="${stl_mesh}">
           <mesh filename="package://tm5_description/meshes/tm5_900/visual/tm_100w_02.obj" />
@@ -282,6 +295,7 @@
         </material>
       </visual>
       <collision>
+        <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0"/>
         <geometry>
           <mesh filename="package://tm5_description/meshes/tm5_900/collision/tm_100w_02_c.stl" />
         </geometry>
@@ -294,7 +308,7 @@
     <joint name="${prefix}wrist_3_joint" type="revolute">
       <parent link="${prefix}wrist_2_link" />
       <child link = "${prefix}wrist_3_link" />
-      <origin xyz="0 0 ${wrist_3_length}" rpy="0 0 0" />
+      <origin xyz="${kinematics['wrist_3']['x']} ${kinematics['wrist_3']['y']} ${kinematics['wrist_3']['z']}" rpy="${kinematics['wrist_3']['roll']} ${kinematics['wrist_3']['pitch']} ${kinematics['wrist_3']['yaw']}" />
       <axis xyz="0 0 1" />
       <limit lower="${wrist_3_lower_limit}" upper="${wrist_3_upper_limit}" effort="150.0" velocity="3.15" />
       <xacro:if value="${safety_limits}">
@@ -341,7 +355,7 @@
     <joint name="${prefix}base-base_link" type="fixed">
       <parent link="${prefix}base" />
       <child link="${prefix}base_link" />
-      <origin xyz="0 0 0" rpy="${0.5 * pi} 0 0" /> <!-- Note: 0.5 * pi -->
+      <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
     <!-- Frame coincident with all-zeros TCP on TM controller -->
