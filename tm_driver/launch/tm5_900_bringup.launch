@@ -11,8 +11,6 @@
   <arg name="min_payload" default="0.0" />
   <arg name="max_payload" default="4.0" />
   <arg name="auto_stick_play" default="true" />
-  <arg name="kinematics_config" />
-  <arg name="robot_description_file" />
   <arg name="kinematics_config" default="$(find tm5_description)/config/tm5_900_default.yaml" />
   <arg name="robot_description_file" default="$(find tm5_description)/launch/tm5_900_upload.launch" />
 
