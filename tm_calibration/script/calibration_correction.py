@@ -3,7 +3,6 @@
 
 import re
 import socket
-import rospy
 import yaml
 import argparse
 import time
@@ -42,7 +41,7 @@ def run_calibration_correction(output_filename, ip_address):
         dd = dh_values_from_robot(ip_address, ("dd", "DeltaDH"))
         dh = dh_values_from_robot(ip_address, ("dh", "DHTable"))
     except socket.error:
-        rospy.logerr(
+        print(
             "Failed to connect to robot. Ensure that the robot powered on and that IP adress({}) is correct.".format(
                 ip_address
             )
@@ -50,12 +49,10 @@ def run_calibration_correction(output_filename, ip_address):
         return
 
     if len(dh) != 42:
-        rospy.logerr(
-            "Invalid DH. Received {} values but expected {}. Data is {}".format(len(dh), 42, dh)
-        )
+        print("Invalid DH. Received {} values but expected {}. Data is {}".format(len(dh), 42, dh))
         return
     if len(dd) != 30:
-        rospy.logerr(
+        print(
             "Invalid Delta DH. Received {} values but expected {}. Data is {}".format(
                 len(dd), 30, dd
             )
@@ -89,7 +86,7 @@ def run_calibration_correction(output_filename, ip_address):
     with open(output_filename, "w") as f:
         yaml.safe_dump(out, f)
 
-    rospy.loginfo("Successfully wrote calibration YAML to {}.".format(output_filename))
+    print("Successfully wrote calibration YAML to {}.".format(output_filename))
 
 
 if __name__ == "__main__":
@@ -110,7 +107,5 @@ if __name__ == "__main__":
         help="Techman robot IP",
     )
     args = parser.parse_args()
-
-    rospy.init_node("calibration_correction")
 
     run_calibration_correction(args.output_filename, args.robot_ip)
