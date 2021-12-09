@@ -1,48 +1,66 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
+import socket
 import rospy
 import yaml
 import argparse
-from tm_msgs.srv import AskItem
+import time
 from tm_calibration.utils import urdf_DH_from_tm_DH, xyzrpys_from_urdf_DH
 
 
-def run_calibration_correction(output_filename, service_uri):
+def dh_values_from_robot(robot_ip, data):
+    pattern = re.compile("{}=\{{(.*)\}}".format(data[1]))
+
+    # The following were obtained by wiresharking the communication between the driver and the robot
+    checksums = {"dd": "37", "dh": "3d"}
+    payload = "$TMSVR,13,{},12,{},*{}\r\n".format(data[0], data[1], checksums[data[0]])
+
+    robot_socket = socket.socket()
+    robot_socket.settimeout(5)
+
+    robot_socket.connect((robot_ip, 5891))
+    robot_socket.sendall(payload)
+
+    timeout = time.time() + 10
+    received = robot_socket.recv(1024)
+    match = pattern.search(received)
+
+    while match is None:
+        if time.time() > timeout:
+            return []
+
+        received = received + robot_socket.recv(1024)
+        match = pattern.search(received)
+
+    return [float(s) for s in match.group(1).split(",")]
+
+
+def run_calibration_correction(output_filename, ip_address):
     try:
-        rospy.wait_for_service(service_uri, timeout=1)
-        ask_item = rospy.ServiceProxy(service_uri, AskItem)
-    except (rospy.ROSException, rospy.ServiceException):
+        dd = dh_values_from_robot(ip_address, ("dd", "DeltaDH"))
+        dh = dh_values_from_robot(ip_address, ("dh", "DHTable"))
+    except socket.error:
         rospy.logerr(
-            "Failed to connect to ROS driver service ({}). Ensure that the robot powered on, the ROS driver is running, and that the service URI is correct.".format(
-                service_uri
+            "Failed to connect to robot. Ensure that the robot powered on and that IP adress({}) is correct.".format(
+                ip_address
             )
         )
         return
 
-    res_dh = ask_item("dh", "DHTable", 1.0)
-    res_dd = ask_item("dd", "DeltaDH", 1.0)
-
-    dh_strs = res_dh.value[9:-1].split(",")
-    dd_strs = res_dd.value[9:-1].split(",")
-
-    if len(dh_strs) != 42:
+    if len(dh) != 42:
         rospy.logerr(
-            "Invalid DH. Received {} values but expected {}. Data is {}".format(
-                len(dh_strs), 42, dh_strs
-            )
+            "Invalid DH. Received {} values but expected {}. Data is {}".format(len(dh), 42, dh)
         )
         return
-    if len(dd_strs) != 30:
+    if len(dd) != 30:
         rospy.logerr(
             "Invalid Delta DH. Received {} values but expected {}. Data is {}".format(
-                len(dd_strs), 30, dd_strs
+                len(dd), 30, dd
             )
         )
         return
-
-    dh = [float(i) for i in dh_strs]
-    dd = [float(i) for i in dd_strs]
 
     urdf_dh = urdf_DH_from_tm_DH(dh, dd)
     xyzs, rpys = xyzrpys_from_urdf_DH(urdf_dh)
@@ -84,8 +102,15 @@ if __name__ == "__main__":
         required=True,
         help="Path to where the script should write the output.",
     )
+
+    parser.add_argument(
+        "--robot_ip",
+        type=str,
+        required=True,
+        help="Techman robot IP",
+    )
     args = parser.parse_args()
 
     rospy.init_node("calibration_correction")
 
-    run_calibration_correction(args.output_filename, "/tm_driver/ask_item")
+    run_calibration_correction(args.output_filename, args.robot_ip)
