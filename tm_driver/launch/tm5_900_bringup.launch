@@ -10,20 +10,22 @@
   <arg name="robot_ip" />
   <arg name="min_payload" default="0.0" />
   <arg name="max_payload" default="4.0" />
+  <arg name="base_frame" default="$(arg prefix)base" />
+  <arg name="tool_frame" default="$(arg prefix)tool0" />
   <arg name="auto_stick_play" default="true" />
-  <!-- robot model -->
-  <!--
-  <include file="$(find tm5_description)/launch/tm5_900_upload.launch">
-  </include>
-  -->
+  <arg name="kinematics_config" default="$(find tm5_description)/config/tm5_900_default.yaml" />
+  <arg name="robot_description_file" default="$(find tm5_description)/launch/tm5_900_upload.launch" />
 
-  <!-- tm common -->
   <include file="$(find tm_driver)/launch/tm_common.launch">
-    <arg name="prefix"  value="$(arg prefix)" />
+    <arg name="prefix" value="$(arg prefix)" />
     <arg name="robot_ip" value="$(arg robot_ip)" />
     <arg name="min_payload" value="$(arg min_payload)" />
     <arg name="max_payload" value="$(arg max_payload)" />
+    <arg name="base_frame" value="$(arg base_frame)" />
+    <arg name="tool_frame" value="$(arg tool_frame)" />
     <arg name="auto_stick_play" value="$(arg auto_stick_play)" />
+    <arg name="kinematics_config" value="$(arg kinematics_config)" />
+    <arg name="robot_description_file" value="$(arg robot_description_file)" />
   </include>
 
 </launch>

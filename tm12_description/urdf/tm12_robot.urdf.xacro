@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://wiki.ros.org/xacro" name="tm12" >
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="tm12">
 
   <!--xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/-->
 
@@ -11,7 +11,8 @@
 
   <!-- arm -->
   <!--xacro:tm12_robot prefix="" joint_limited="false" transmission_hw_interface="$(arg transmission_hw_interface)" /-->
-  <xacro:tm12_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" />
+  <xacro:arg name="kinematics_config" default="$(find tm12_description)/config/tm12_default.yaml" />
+  <xacro:tm12_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" kinematics_file="${load_yaml('$(arg kinematics_config)')}" />
 
   <link name="world" />
   <joint name="world_joint" type="fixed">
