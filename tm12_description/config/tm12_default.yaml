@@ -1,3 +1,4 @@
+# See Chapter 4.2.1.1 of https://assets.omron.eu/downloads/manual/en/v2/i624_tm12_and_tm14_hardware_installation_manual_en.pdf
 kinematics:
   shoulder_1:
     x: 0.0
@@ -36,7 +37,7 @@ kinematics:
     yaw: 0.0
   wrist_3:
     x: 0.0
-    y: -0.1144
+    y: -0.11315
     z: 0.0
     roll: 1.5707963267948966
     pitch: -0.0
