@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="tm5_700">
 
-  <!-- xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/-->
   <xacro:arg name="stl_mesh" default="false"/>
 
   <!-- common stuff -->
@@ -11,7 +10,6 @@
   <xacro:include filename="$(find tm5_description)/urdf/tm5_700.urdf.xacro" />
 
   <!-- arm -->
-  <!--xacro:tm5_700_robot prefix="" joint_limited="false" transmission_hw_interface="$(arg transmission_hw_interface)" /-->
   <xacro:arg name="kinematics_config" default="$(find tm5_description)/config/tm5_700_default.yaml" />
   <xacro:tm5_700_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" kinematics_file="${load_yaml('$(arg kinematics_config)')}" />
 
