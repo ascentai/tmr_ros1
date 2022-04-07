@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="tm5x_900" >
+
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find tm5_description)/urdf/common.gazebo.xacro" />
+
+  <!-- tm5_900 -->
+  <xacro:include filename="$(find tm5_description)/urdf/tm5x_900.urdf.xacro" />
+
+  <!-- arm -->
+  <xacro:arg name="kinematics_config" default="$(find tm5_description)/config/tm5x_900_default.yaml" />
+  <xacro:tm5_900_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" kinematics_file="${load_yaml('$(arg kinematics_config)')}" />
+
+  <link name="world" />
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link="base" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+</robot>
