@@ -10,7 +10,7 @@
 
   <!-- arm -->
   <xacro:arg name="kinematics_config" default="$(find tm5_description)/config/tm5x_900_default.yaml" />
-  <xacro:tm5_900_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" kinematics_file="${load_yaml('$(arg kinematics_config)')}" />
+  <xacro:tm5x_900_robot prefix="" joint_limited="false" stl_mesh="$(arg stl_mesh)" kinematics_file="${load_yaml('$(arg kinematics_config)')}" />
 
   <link name="world" />
   <joint name="world_joint" type="fixed">
