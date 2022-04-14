@@ -5,7 +5,7 @@
   <!-- common stuff -->
   <xacro:include filename="$(find tm5_description)/urdf/common.gazebo.xacro" />
 
-  <!-- tm5_900 -->
+  <!-- tm5x_900 -->
   <xacro:include filename="$(find tm5_description)/urdf/tm5x_900.urdf.xacro" />
 
   <!-- arm -->
