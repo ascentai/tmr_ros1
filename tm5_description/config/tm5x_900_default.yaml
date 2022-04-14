@@ -1,0 +1,44 @@
+# See Chapter 4.2.1.1 of https://assets.omron.eu/downloads/manual/en/v6/i623_tm5_series_installation_manual_en.pdf
+kinematics:
+  shoulder_1:
+    x: 0.0
+    y: 0.0
+    z: 0.1452
+    roll: 0.0
+    pitch: -0.0
+    yaw: 0.0
+  shoulder_2:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    roll: -1.5707963267948966
+    pitch: -1.5707963267948966
+    yaw: 0.0
+  elbow:
+    x: 0.429
+    y: 0.0
+    z: 0.0
+    roll: 0.0
+    pitch: -0.0
+    yaw: 0.0
+  wrist_1:
+    x: 0.4115
+    y: 0.0
+    z: -0.1223
+    roll: 0.0
+    pitch: -0.0
+    yaw: 1.5707963267948966
+  wrist_2:
+    x: 0.0
+    y: -0.106
+    z: 0.0
+    roll: 1.5707963267948966
+    pitch: -0.0
+    yaw: 0.0
+  wrist_3:
+    x: 0.0
+    y: -0.11315
+    z: 0.0
+    roll: 1.5707963267948966
+    pitch: -0.0
+    yaw: 0.0

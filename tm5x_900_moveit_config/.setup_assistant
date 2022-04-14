@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: tm5_description
+    relative_path: urdf/tm5x_900_robot.urdf.xacro
+    xacro_args: stl_mesh:=false
+  SRDF:
+    relative_path: config/tm5x_900.srdf
+  CONFIG:
+    author_name: Chansocheat Tieng
+    author_email: chansocheat@ascent.ai
+    generated_timestamp: 1649322822
