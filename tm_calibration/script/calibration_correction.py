@@ -20,11 +20,11 @@ def dh_values_from_robot(robot_ip, data):
     robot_socket.settimeout(5)
 
     robot_socket.connect((robot_ip, 5891))
-    robot_socket.sendall(payload)
+    robot_socket.sendall(payload.encode())
 
     timeout = time.time() + 10
     received = robot_socket.recv(1024)
-    match = pattern.search(received)
+    match = pattern.search(received.decode())
 
     while match is None:
         if time.time() > timeout:
